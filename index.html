@@ -182,8 +182,8 @@ footer{max-width:1100px;margin:24px auto;padding:0 16px 24px;color:var(--muted);
           <label>Assigned Staff<select id="spStaff"></select></label>
           <label>Backup Staff<select id="spBackup"></select></label>
         </div>
-        <div style="margin-top:10px"><button class="primary" id="addSpecial">Add Special Live</button></div>
-        <p class="adminnote"><strong>Important:</strong> in this first demo, special LIVE entries are stored only in this browser/device. We will connect an online database after you approve the design so everyone sees the same additions.</p>
+        <div style="margin-top:10px"><button class="primary" id="addSpecial" disabled title="Secure admin sign-in is not connected yet">Add Special Live — Admin Setup Pending</button></div>
+        <p class="adminnote"><strong>Online database connected for reading.</strong> Admin adding/deleting is temporarily locked until we finish secure sign-in, so public visitors cannot change duties.</p>
       </div>
     </div>
     <div class="section">
@@ -197,6 +197,37 @@ footer{max-width:1100px;margin:24px auto;padding:0 16px 24px;color:var(--muted);
 
 <script>
 const DATA = {"dates": ["2026-08-22", "2026-08-23", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-29", "2026-08-30", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05", "2026-09-06", "2026-09-07", "2026-09-08"], "graphics": {"LAI (1059)": ["10:00 - 18:00 HOME", "8:00 - 16:00", "9:00 - 17:00 HOME", "OFF", "8:00 - 16:00", "9:00 - 17:00 HOME", "14:00 - 22:00 HOME", "12:00 - 20:00 HOME", "8:00 - 16:00", "OFF", "8:00 - 16:00", "8:00 - 16:00", "8:00 - 16:00 HOME", "9:00 - 17:00 HOME", "14:00 - 22:00 HOME", "OFF", "8:00 - 16:00", "8:00 - 16:00"], "AFNAN (1057)": ["9:00 - 17:00 HOME", "14:00 - 22:00 HOME", "OFF", "8:00 - 16:00", "8:00 - 16:00", "8:00 - 16:00", "10:00 - 18:00 HOME", "12:00 - 20:00 HOME", "OFF", "8:00 - 16:00", "12:00 - 20:00 HOME", "14:00 - 22:00 HOME", "8:00 - 16:00", "14:00 - 22:00 HOME", "OFF", "8:00 - 16:00", "10:00 - 18:00 HOME", "12:00 - 20:00 HOME"], "RAAI (1058)": ["9:00 - 17:00", "16:00 - 00:00 HOME", "OFF", "9:00 - 17:00", "16:00 - 00:00 HOME", "9:00 - 17:00", "16:00 - 00:00 HOME", "9:00 - 17:00", "OFF", "9:00 - 17:00", "16:00 - 00:00 HOME", "9:00 - 17:00", "16:00 - 00:00 HOME", "9:00 - 17:00", "OFF", "9:00 - 17:00", "16:00 - 00:00 HOME", "9:00 - 17:00"], "HISHAM (1062)": ["14:00 - 22:00", "14:00 - 22:00 HOME", "16:00 - 00:00 HOME", "14:00 - 22:00 HOME", "16:00 - 00:00 HOME", "OFF", "14:00 - 22:00 HOME", "16:00 - 00:00 HOME", "14:00 - 22:00 HOME", "16:00 - 00:00 HOME", "14:00 - 22:00", "OFF", "16:00 - 00:00 HOME", "14:00 - 22:00 HOME", "16:00 - 00:00 HOME", "14:00 - 22:00 HOME", "16:00 - 00:00 HOME", "OFF"], "ISMAIL (501)": ["16:00 - 00:00", "OFF", "12:00 - 20:00", "10:00 - 18:00", "9:00 - 17:00", "16:00 - 00:00", "10:00 - 18:00", "OFF", "10:00 - 18:00", "16:00 - 00:00", "10:00 - 18:00", "8:00 - 16:00", "8:00 - 16:00", "OFF", "10:00 - 18:00", "14:00 - 22:00", "8:00 - 16:00", "10:00 - 18:00"], "RUWAY (186)": ["10:00 - 18:00", "10:00 - 18:00", "8:00 - 16:00", "10:00 - 18:00", "OFF", "10:00 - 18:00", "14:00 - 22:00", "10:00 - 18:00", "10:00 - 18:00", "10:00 - 18:00", "OFF", "10:00 - 18:00", "10:00 - 18:00", "10:00 - 18:00", "10:00 - 18:00", "10:00 - 18:00", "OFF", "10:00 - 18:00"], "HASSAN (392)": ["10:00 - 18:00", "14:00 - 22:00", "16:00 - 00:00", "10:00 - 18:00", "OFF", "13:00 - 21:00", "16:00 - 00:00", "10:00 - 18:00", "14:00 - 22:00", "16:00 - 00:00", "OFF", "10:00 - 18:00", "16:00 - 00:00", "9:00 - 17:00", "10:00 - 18:00", "16:00 - 00:00", "OFF", "10:00 - 18:00"], "RAIQ (959)": ["10:00 - 18:00", "10:00 - 18:00", "10:00 - 18:00", "OFF", "10:00 - 18:00", "10:00 - 18:00", "16:00 - 00:00", "10:00 - 18:00", "10:00 - 18:00", "OFF", "10:00 - 18:00", "10:00 - 18:00", "10:00 - 18:00", "16:00 - 00:00", "10:00 - 18:00", "OFF", "10:00 - 18:00", "10:00 - 18:00"], "IYAN (955)": ["OFF", "16:00 - 00:00", "10:00 - 18:00", "16:00 - 00:00", "13:00 - 21:00", "16:00 - 00:00", "OFF", "16:00 - 00:00", "16:00 - 00:00", "10:00 - 18:00", "16:00 - 00:00", "16:00 - 00:00", "OFF", "16:00 - 00:00", "16:00 - 00:00", "10:00 - 18:00", "14:00 - 22:00", "16:00 - 00:00"], "WYL (346)": ["OFF", "14:00 - 22:00", "14:00 - 22:00", "14:00 - 22:00", "14:00 - 22:00", "14:00 - 22:00", "OFF", "14:00 - 22:00", "14:00 - 22:00", "14:00 - 22:00", "14:00 - 22:00", "14:00 - 22:00", "OFF", "16:00 - 00:00", "14:00 - 22:00", "14:00 - 22:00", "14:00 - 22:00", "14:00 - 22:00"], "DISHALA (1054)": ["OFF", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00", "OFF", "OFF", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00", "OFF", "OFF", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00"], "ADHDHU (344)": ["OFF", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00", "OFF", "OFF", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00", "OFF", "OFF", "9:00 - 17:00", "9:00 - 17:00", "9:00 - 17:00"]}, "live": {"HENDHUNU HENDHUNA": {"time": "07:30 - 10:00", "assigned": [null, "LAI (1059)", "RUWAY (186)", "AFNAN (1057)", "LAI (1059)", "AFNAN (1057)", null, null, "LAI (1059)", "AFNAN (1057)", "LAI (1059)", "LAI (1059)", "AFNAN (1057)", null, null, "AFNAN (1057)", "ISMAIL (501)", "LAI (1059)"], "backup": [null, "AFNAN (1057)", "LAI (1059)", "ISMAIL (501)", "AFNAN (1057)", "LAI (1059)", null, null, "ISMAIL (501)", "RUWAY (186)", "AFNAN (1057)", "AFNAN (1057)", "LAI (1059)", null, null, "ISMAIL (501)", "LAI (1059)", "ISMAIL (501)"]}, "KUDA MASSAIYKATHEH": {"time": "16:30 - 18:00", "assigned": ["HISHAM (1062)", null, null, "ISMAIL (501)", null, null, null, "RUWAY (186)", null, null, "HISHAM (1062)", null, null, null, "ISMAIL (501)", null, null, "RUWAY (186)"], "backup": ["HASSAN (392)", null, null, "HASSAN (392)", null, null, null, "HASSAN (392)", null, null, "ISMAIL (501)", null, null, null, "HASSAN (392)", null, null, "HASSAN (392)"]}, "WEEKEND VIBE": {"time": "22:00 - 23:30", "assigned": [null, null, null, null, null, "IYAN (955)", null, null, null, null, null, null, "HASSAN (392)", null, null, null, null, null], "backup": [null, null, null, null, null, "IYAN (955)", null, null, null, null, null, null, "HISHAM (1062)", null, null, null, null, null]}}, "daily": {"HENDHUNU HENDHUNA DAILY WORKS": {"time": "14:00 - 16:00", "assigned": ["RUWAY (186)", "RAIQ (959)", "IYAN (955)", "ISMAIL (501)", "RAIQ (959)", null, null, "RAIQ (959)", "RUWAY (186)", "IYAN (955)", "ISMAIL (501)", "HASSAN (392)", null, null, "RAIQ (959)", "IYAN (955)", "RAIQ (959)", "ISMAIL (501)"]}}, "news": {"09:00 - 12:00": ["RUWAY (186)", "HASSAN (392)", "RUWAY (186)", "HASSAN (392)", "ISMAIL (501)", "RUWAY (186)", "ISMAIL (501)", "RAIQ (959)", "RUWAY (186)", "HASSAN (392)", "RAIQ (959)", "RUWAY (186)", "ISMAIL (501)", "HASSAN (392)", "RAIQ (959)", "RUWAY (186)", "RAIQ (959)", "RUWAY (186)"], "12:00 - 15:00 (Friday 13:00-15:00)": ["AFNAN (1057)", "RAIQ (959)", "ISMAIL (501)", "AFNAN (1057)", "RAIQ (959)", "AFNAN (1057)", "ISMAIL (501)", "HASSAN (392)", "ISMAIL (501)", "AFNAN (1057)", "AFNAN (1057)", "ISMAIL (501)", "AFNAN (1057)", "HASSAN (392)", "HASSAN (392)", "AFNAN (1057)", "ISMAIL (501)", "ISMAIL (501)"], "15:00 - 18:00": ["HASSAN (392)", "AFNAN (1057)", "IYAN (955)", "ISMAIL (501)", "RAIQ (959)", "RAIQ (959)", "AFNAN (1057)", "AFNAN (1057)", "HASSAN (392)", "IYAN (955)", "ISMAIL (501)", "HASSAN (392)", "RAIQ (959)", "AFNAN (1057)", "ISMAIL (501)", "HISHAM (1062)", "AFNAN (1057)", "HASSAN (392)"], "BACK-UP DUTY 1": ["ISMAIL (501)", "IYAN (955)", "HISHAM (1062)", "IYAN (955)", "HISHAM (1062)", "ISMAIL (501)", "HASSAN (392)", "HISHAM (1062)", "IYAN (955)", "ISMAIL (501)", "IYAN (955)", "IYAN (955)", "HISHAM (1062)", "IYAN (955)", "HISHAM (1062)", "HASSAN (392)", "HISHAM (1062)", "IYAN (955)"], "18:00 - 21:00": ["HISHAM (1062)", "HISHAM (1062)", "HASSAN (392)", "HISHAM (1062)", "IYAN (955)", "HASSAN (392)", "HISHAM (1062)", "HISHAM (1062)", "HISHAM (1062)", "HISHAM (1062)", "HISHAM (1062)", "HISHAM (1062)", "HASSAN (392)", "HISHAM (1062)", "IYAN (955)", "ISMAIL (501)", "IYAN (955)", "AFNAN (1057)"], "21:00 - 00:00": ["ISMAIL (501)", "IYAN (955)", "HISHAM (1062)", "IYAN (955)", "HISHAM (1062)", "ISMAIL (501)", "HASSAN (392)", "HISHAM (1062)", "IYAN (955)", "ISMAIL (501)", "IYAN (955)", "IYAN (955)", "HISHAM (1062)", "IYAN (955)", "HISHAM (1062)", "HASSAN (392)", "HISHAM (1062)", "IYAN (955)"], "BACK-UP DUTY 2": ["HASSAN (392)", "AFNAN (1057)", "IYAN (955)", "ISMAIL (501)", "RAIQ (959)", "RAIQ (959)", "AFNAN (1057)", "AFNAN (1057)", "HASSAN (392)", "IYAN (955)", "ISMAIL (501)", "HASSAN (392)", "RAIQ (959)", "AFNAN (1057)", "ISMAIL (501)", "HISHAM (1062)", "AFNAN (1057)", "HASSAN (392)"]}, "contacts": [["ISMAIL (501)", "753 2887"], ["RUWAY (186)", "773 4007"], ["HASSAN (392)", "782 3393"], ["RAIQ (959)", "731 1686"], ["IYAN (955)", "723 4951"], ["WYL (346)", "788 7524"], ["AFNAN (1057)", "784 2000"], ["DISHALA (1054)", "748 3457"], ["HISHAM (1062)", "775 1001"], ["LAI (1059)", "733 5880"]]};
+const SUPABASE_URL = "https://eqlmwfaovypbhvcgrjyu.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_rAVR70jh3phAYEeTM2YJRg_NQO3aQIb";
+
+let onlineSpecials = [];
+let specialLiveLoadError = "";
+
+async function loadSpecials(){
+  try{
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/special_live?select=id,event_name,duty_date,start_time,end_time,assigned_staff,backup_staff,notes,status&order=duty_date.asc,start_time.asc`,
+      { headers: { "apikey": SUPABASE_PUBLISHABLE_KEY } }
+    );
+    if(!res.ok) throw new Error(`Supabase returned ${res.status}`);
+    const rows = await res.json();
+    onlineSpecials = rows.map(r => ({
+      id: String(r.id),
+      name: r.event_name || "Special Live",
+      date: r.duty_date,
+      time: `${String(r.start_time || "").slice(0,5)} - ${String(r.end_time || "").slice(0,5)}`,
+      staff: r.assigned_staff || "",
+      backup: r.backup_staff || "",
+      notes: r.notes || "",
+      status: r.status || "ACTIVE"
+    })).filter(x => x.status.toUpperCase() !== "CANCELLED");
+    specialLiveLoadError = "";
+  }catch(err){
+    console.error("Could not load Special Live from Supabase:", err);
+    onlineSpecials = [];
+    specialLiveLoadError = "Could not load Special / Sudden Live from the online database.";
+  }
+}
 const staffNames = Object.keys(DATA.graphics);
 let selected = new Date();
 selected.setHours(12,0,0,0);
@@ -243,9 +274,8 @@ function dutyCard(title, person, time, cls='news-card', badges=''){
   </div>`
 }
 function specials(){
-  try{return JSON.parse(localStorage.getItem('psm_special_live')||'[]')}catch(e){return[]}
+  return onlineSpecials;
 }
-function saveSpecials(v){localStorage.setItem('psm_special_live',JSON.stringify(v))}
 function render(){
   const i=idx();
   document.getElementById('dow').textContent=selected.toLocaleDateString('en-GB',{weekday:'long'}).toUpperCase();
@@ -292,7 +322,7 @@ function render(){
   document.getElementById('dailyList').innerHTML=dailyHtml||empty('No daily task assignment for this date.');
 
   const spHtml=todaysSpecial.map(x=>dutyCard(x.name,x.staff,x.time,'live-card',`<span class="badge live">SPECIAL LIVE</span>${x.backup?`<span class="badge backup">Backup: ${esc(x.backup)}</span>`:''}`)).join('');
-  document.getElementById('specialToday').innerHTML=spHtml||empty('No Special / Sudden Live added for this date.');
+  document.getElementById('specialToday').innerHTML=spHtml||empty(specialLiveLoadError || 'No Special / Sudden Live added for this date.');
 
   renderOnNow(i);
   renderStaff();
@@ -330,15 +360,19 @@ function renderContacts(){
 }
 function renderSpecialAdmin(){
   const s=specials();
-  document.getElementById('specialAdmin').innerHTML=s.length?s.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).map(x=>`<div class="card live-card">
-    <div class="special-row">
-      <div><div class="person">${esc(x.name)}</div><div class="time">${esc(x.date)} · ${esc(x.time)}<br>${esc(x.staff)}${x.backup?` · Backup: ${esc(x.backup)}`:''}</div></div>
-      <button class="delete" data-del="${esc(x.id)}">Delete</button>
-    </div>
-  </div>`).join(''):empty('No Special Live entries saved on this device.');
-  document.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{
-    saveSpecials(specials().filter(x=>x.id!==b.dataset.del)); render();
-  }));
+  document.getElementById('specialAdmin').innerHTML = specialLiveLoadError
+    ? empty(specialLiveLoadError)
+    : (s.length
+      ? s.slice().sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).map(x=>`<div class="card live-card">
+          <div class="special-row">
+            <div>
+              <div class="person">${esc(x.name)}</div>
+              <div class="time">${esc(x.date)} · ${esc(x.time)}<br>${esc(x.staff)}${x.backup?` · Backup: ${esc(x.backup)}`:''}</div>
+            </div>
+            <span class="badge live">ONLINE</span>
+          </div>
+        </div>`).join('')
+      : empty('No Special Live entries in the online database yet.'));
 }
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); renderOnNow(idx())}
 document.getElementById('prev').addEventListener('click',()=>{selected.setDate(selected.getDate()-1);render()});
@@ -355,12 +389,15 @@ const opts=['<option value="">None</option>',...staffNames.map(n=>`<option>${esc
 document.getElementById('spStaff').innerHTML=staffNames.map(n=>`<option>${esc(n)}</option>`).join('');
 document.getElementById('spBackup').innerHTML=opts;
 document.getElementById('addSpecial').addEventListener('click',()=>{
-  const name=document.getElementById('spName').value.trim(), date=document.getElementById('spDate').value, time=document.getElementById('spTime').value.trim(), staff=document.getElementById('spStaff').value, backup=document.getElementById('spBackup').value;
-  if(!name||!date||!time||!staff){alert('Please enter Live name, date, time and assigned staff.');return}
-  const s=specials(); s.push({id:String(Date.now()),name,date,time,staff,backup}); saveSpecials(s);
-  document.getElementById('spName').value=''; document.getElementById('spTime').value=''; render();
+  alert('Secure Admin sign-in is not connected yet. Public reading is online, but adding/editing is intentionally locked for now.');
 });
-render();tick();setInterval(tick,30000);
+(async function init(){
+  await loadSpecials();
+  render();
+  tick();
+  setInterval(tick,30000);
+  setInterval(async()=>{ await loadSpecials(); render(); },60000);
+})();
 </script>
 </body>
 </html>
