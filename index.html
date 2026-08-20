@@ -274,6 +274,23 @@ label{font-size:12px;color:var(--muted);font-weight:800;display:block}
 #adminEditorTitle{margin:0 0 10px;font-size:14px}
 .special-row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
 
+
+.news-focus{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.8fr);gap:10px}
+.focus-card{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:17px;padding:17px;box-shadow:var(--shadow)}
+.focus-card.active-news{border-color:color-mix(in srgb,var(--green) 42%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--green-soft) 70%,var(--surface)),var(--surface) 62%)}
+.focus-card.next-news{border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.focus-kicker{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.focus-kicker.active{color:var(--green)} .focus-kicker.next{color:var(--accent)}
+.pulse-dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 color-mix(in srgb,var(--green) 45%,transparent);animation:pulseDuty 1.8s infinite}
+@keyframes pulseDuty{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--green) 42%,transparent)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.focus-name{font-size:23px;font-weight:900;letter-spacing:-.025em;margin-top:8px;overflow-wrap:anywhere}
+.focus-time{margin-top:4px;color:var(--muted);font-size:14px;font-weight:700}
+.focus-countdown{margin-top:12px;font-size:12px;color:var(--muted)}
+.focus-empty{color:var(--muted);font-size:14px;margin-top:8px}
+.news-slot-active{border-color:color-mix(in srgb,var(--green) 45%,var(--line))!important;background:color-mix(in srgb,var(--green-soft) 58%,var(--surface))!important}
+.news-slot-next{border-color:color-mix(in srgb,var(--accent) 38%,var(--line))!important}
+@media(max-width:760px){.news-focus{grid-template-columns:1fr}.focus-name{font-size:20px}}
+
 footer{
   max-width:1180px;margin:26px auto;
   padding:0 18px 24px;
@@ -389,6 +406,10 @@ footer{
       <div id="liveToday" class="grid"></div>
     </div>
     <div class="section">
+      <div class="section-head"><h2>News & Social Media — Current Duty</h2><span class="sub">Maldives time</span></div>
+      <div id="newsFocusToday" class="news-focus"></div>
+    </div>
+    <div class="section">
       <div class="section-head"><h2>News & Social Media Today</h2></div>
       <div id="newsToday" class="grid"></div>
     </div>
@@ -402,6 +423,10 @@ footer{
   </section>
 
   <section id="news" class="panel hidden">
+    <div class="section">
+      <div class="section-head"><h2>Current News Duty</h2><span class="sub">Maldives time</span></div>
+      <div id="newsFocusTab" class="news-focus"></div>
+    </div>
     <div class="section">
       <div class="section-head"><h2>News & Social Media Graphics Duty</h2></div>
       <div id="newsList" class="grid"></div>
@@ -546,6 +571,101 @@ function ymd(d){
   const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
   return `${y}-${m}-${day}`;
 }
+function maleParts(){
+  const parts=new Intl.DateTimeFormat("en-GB",{
+    timeZone:"Indian/Maldives",year:"numeric",month:"2-digit",day:"2-digit",
+    hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23",weekday:"short"
+  }).formatToParts(new Date());
+  const obj={}; parts.forEach(p=>{if(p.type!=="literal")obj[p.type]=p.value});
+  return {y:+obj.year,m:+obj.month,d:+obj.day,h:+obj.hour,min:+obj.minute,sec:+obj.second,weekday:obj.weekday};
+}
+function maleYmd(){
+  const p=maleParts();
+  return `${p.y}-${String(p.m).padStart(2,"0")}-${String(p.d).padStart(2,"0")}`;
+}
+function maleMinutesNow(){
+  const p=maleParts();
+  return p.h*60+p.min+(p.sec/60);
+}
+function minutesToText(total){
+  const mins=Math.max(0,Math.round(total));
+  const h=Math.floor(mins/60),m=mins%60;
+  if(h&&m)return `${h} hr ${m} min`;
+  if(h)return `${h} hr`;
+  return `${m} min`;
+}
+function parseSlotMinutes(slot,dateStr){
+  if(!slot||/BACK-UP/i.test(slot))return null;
+  const m=slot.match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+  if(!m)return null;
+  let start=(+m[1])*60+(+m[2]),end=(+m[3])*60+(+m[4]);
+  if(/Friday\s*13:00-15:00/i.test(slot)){
+    const d=new Date(`${dateStr}T12:00:00`);
+    if(d.getDay()===5){start=13*60;end=15*60}
+  }
+  if(end<=start)end+=24*60;
+  return {start,end};
+}
+function formatMinutesTime(mins){
+  mins=((mins%(24*60))+(24*60))%(24*60);
+  return `${String(Math.floor(mins/60)).padStart(2,"0")}:${String(mins%60).padStart(2,"0")}`;
+}
+function getNewsCurrentAndNext(i){
+  if(i<0)return {active:null,next:null,outside:true};
+  const dateStr=DATA.dates[i];
+  const slots=Object.entries(DATA.news)
+    .filter(([slot])=>!/BACK-UP/i.test(slot))
+    .map(([slot,arr])=>{const r=parseSlotMinutes(slot,dateStr);return r?{slot,person:arr[i],...r}:null})
+    .filter(Boolean).sort((a,b)=>a.start-b.start);
+
+  const now=maleMinutesNow();
+  const active=slots.find(s=>now>=s.start&&now<s.end)||null;
+  const next=slots.find(s=>s.start>now)||null;
+  return {active,next,now,isToday:dateStr===maleYmd(),dateStr};
+}
+function renderNewsFocus(i){
+  const state=getNewsCurrentAndNext(i);
+
+  let activeHtml;
+  if(i<0){
+    activeHtml=`<div class="focus-card"><div class="focus-kicker">News duty</div><div class="focus-empty">No roster is published for this date.</div></div>`;
+  }else if(state.active){
+    const kicker=state.isToday
+      ? `<div class="focus-kicker active"><span class="pulse-dot"></span>Active now</div>`
+      : `<div class="focus-kicker active">Duty at this time</div>`;
+    const countdown=state.isToday
+      ? `Ends in approximately ${minutesToText(state.active.end-state.now)}`
+      : `Based on the current Maldives clock time (${formatMinutesTime(Math.floor(state.now))})`;
+    activeHtml=`<div class="focus-card active-news">
+      ${kicker}
+      <div class="focus-name">${esc(cleanName(state.active.person||"Unassigned"))}</div>
+      <div class="focus-time">${formatMinutesTime(state.active.start)} – ${formatMinutesTime(state.active.end)} · News & Social Media</div>
+      <div class="focus-countdown">${countdown}</div>
+    </div>`;
+  }else{
+    activeHtml=`<div class="focus-card"><div class="focus-kicker">${state.isToday?"News duty":"Duty at this time"}</div><div class="focus-empty">No News & Social Media duty falls within the current Maldives clock time for this date.</div></div>`;
+  }
+
+  let nextHtml;
+  if(i<0){
+    nextHtml=`<div class="focus-card"><div class="focus-kicker next">Up next</div><div class="focus-empty">No roster is published for this date.</div></div>`;
+  }else if(state.next){
+    nextHtml=`<div class="focus-card next-news">
+      <div class="focus-kicker next">Up next</div>
+      <div class="focus-name">${esc(cleanName(state.next.person||"Unassigned"))}</div>
+      <div class="focus-time">${formatMinutesTime(state.next.start)} – ${formatMinutesTime(state.next.end)}</div>
+      <div class="focus-countdown">${state.isToday?`Starts in approximately ${minutesToText(state.next.start-state.now)}`:"Next scheduled News duty after the current Maldives clock time"}</div>
+    </div>`;
+  }else{
+    nextHtml=`<div class="focus-card"><div class="focus-kicker next">Up next</div><div class="focus-empty">No later News duty scheduled for this date.</div></div>`;
+  }
+
+  const combined=activeHtml+nextHtml;
+  const a=document.getElementById("newsFocusToday"),b=document.getElementById("newsFocusTab");
+  if(a)a.innerHTML=combined;
+  if(b)b.innerHTML=combined;
+}
+
 function idx(){ return DATA.dates.indexOf(ymd(selected)); }
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function parseTimeRange(s, dateObj){
@@ -600,13 +720,26 @@ function render(){
   document.getElementById('graphicsList').innerHTML = i<0?empty('No roster for this date.'):
     staffNames.map(n=>graphicsCard(n,DATA.graphics[n][i])).join('');
 
+  const newsState=getNewsCurrentAndNext(i);
   const newsHtml=i<0?empty('No roster for this date.'):Object.entries(DATA.news).map(([slot,arr])=>{
     const backup=/BACK-UP/i.test(slot);
     const person=arr[i];
-    return dutyCard(slot,person,'','news-card',`<span class="badge ${backup?'backup':''}">${backup?'BACKUP':'NEWS DUTY'}</span>${isNow(slot,selected)?'<span class="badge on">ACTIVE NOW</span>':''}`);
+    let extraClass='news-card';
+    let statusBadge=`<span class="badge ${backup?'backup':''}">${backup?'BACKUP':'NEWS DUTY'}</span>`;
+    if(!backup&&newsState.active&&newsState.active.slot===slot){
+      extraClass+=' news-slot-active';
+      statusBadge+=newsState.isToday
+        ? '<span class="badge on">ACTIVE NOW</span>'
+        : '<span class="badge on">AT THIS TIME</span>';
+    }else if(!backup&&newsState.next&&newsState.next.slot===slot){
+      extraClass+=' news-slot-next';
+      statusBadge+='<span class="badge">UP NEXT</span>';
+    }
+    return dutyCard(slot,person,'',extraClass,statusBadge);
   }).join('');
   document.getElementById('newsList').innerHTML=newsHtml;
   document.getElementById('newsToday').innerHTML=newsHtml;
+  renderNewsFocus(i);
 
   let liveHtml='';
   if(i>=0){
@@ -643,7 +776,10 @@ function renderOnNow(i){
   const out=[];
   if(i>=0){
     staffNames.forEach(n=>{const sh=DATA.graphics[n][i]; if(isNow(sh,selected))out.push(graphicsCard(n,sh));});
-    Object.entries(DATA.news).forEach(([slot,arr])=>{if(!/BACK-UP/i.test(slot)&&isNow(slot,selected))out.push(dutyCard('News & Social Media',arr[i],slot,'news-card','<span class="badge on">ACTIVE NOW</span>'));});
+    const newsState=getNewsCurrentAndNext(i);
+    if(newsState.active&&newsState.isToday){
+      out.push(dutyCard('News & Social Media',newsState.active.person,`${formatMinutesTime(newsState.active.start)} - ${formatMinutesTime(newsState.active.end)}`,'news-card news-slot-active','<span class="badge on">ACTIVE NOW</span>'));
+    }
     Object.entries(DATA.live).forEach(([program,o])=>{if(o.assigned[i]&&isNow(o.time,selected))out.push(dutyCard(program,o.assigned[i],o.time,'live-card','<span class="badge live">LIVE NOW</span>'));});
   }
   specials().filter(x=>x.date===ymd(selected)&&isNow(x.time,selected)).forEach(x=>out.push(dutyCard(x.name,x.staff,x.time,'live-card','<span class="badge live">SPECIAL LIVE NOW</span>')));
@@ -700,7 +836,12 @@ function renderSpecialAdmin(){
     document.querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',()=>deleteSpecial(b.dataset.delete)));
   }
 }
-function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); renderOnNow(idx())}
+function tick(){
+  const mp=maleParts();
+  document.getElementById('clock').textContent=`Maldives ${String(mp.h).padStart(2,'0')}:${String(mp.min).padStart(2,'0')}`;
+  renderOnNow(idx());
+  renderNewsFocus(idx());
+}
 document.getElementById('prev').addEventListener('click',()=>{selected.setDate(selected.getDate()-1);render()});
 document.getElementById('next').addEventListener('click',()=>{selected.setDate(selected.getDate()+1);render()});
 document.getElementById('today').addEventListener('click',()=>{selected=new Date();selected.setHours(12,0,0,0);render()});
