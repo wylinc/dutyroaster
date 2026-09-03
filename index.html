@@ -347,6 +347,27 @@ label{font-size:12px;color:var(--muted);font-weight:800;display:block}
   .current-news-grid .card{min-height:auto}
 }
 
+
+/* Blinking live / active indicators */
+@keyframes dutyPulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.25;transform:scale(.72)}
+}
+.blink-dot{
+  display:inline-block;width:9px;height:9px;border-radius:50%;
+  margin-right:7px;vertical-align:1px;background:currentColor;
+  animation:dutyPulse 1.05s ease-in-out infinite;
+}
+.badge.on::before,.badge.live-now::before{
+  content:"";display:inline-block;width:7px;height:7px;border-radius:50%;
+  margin-right:5px;background:currentColor;vertical-align:1px;
+  animation:dutyPulse 1.05s ease-in-out infinite;
+}
+.badge.live-now{background:var(--red-soft);color:var(--red)}
+@media (prefers-reduced-motion:reduce){
+  .blink-dot,.badge.on::before,.badge.live-now::before{animation:none}
+}
+
 footer{
   max-width:1180px;margin:26px auto;
   padding:0 18px 24px;
@@ -450,26 +471,30 @@ footer{
 
   <section id="overview" class="panel">
     <div class="section">
+      <div class="section-head"><h2>News & Social Media — Current Duty</h2><span class="sub" id="newsCurrentClock"></span></div>
+      <div id="newsCurrent" class="grid current-news-grid"></div>
+    </div>
+
+    <div class="section">
       <div class="section-head"><h2>Special / Sudden Live</h2><span class="sub">Manual / urgent assignments</span></div>
       <div id="specialToday" class="grid"></div>
     </div>
+
     <div class="section">
       <div class="section-head"><h2>Live / Recording Today</h2><span class="sub">Regular schedule only</span></div>
       <div id="liveToday" class="grid"></div>
     </div>
+
     <div class="section">
       <div class="section-head"><h2>Staff Leave Today</h2><span class="sub">Sick Leave · Annual Leave · FRL</span></div>
       <div id="leaveToday" class="grid"></div>
     </div>
 
     <div class="section">
-      <div class="section-head"><h2>News & Social Media — Current Duty</h2><span class="sub" id="newsCurrentClock"></span></div>
-      <div id="newsCurrent" class="grid current-news-grid"></div>
-    </div>
-    <div class="section">
       <div class="section-head"><h2>News & Social Media Today</h2></div>
       <div id="newsToday" class="grid"></div>
     </div>
+
     <div class="section">
       <div class="section-head"><h2>On Duty Now</h2><span class="sub" id="clock"></span></div>
       <div id="onNow" class="grid"></div>
@@ -612,11 +637,11 @@ footer{
   </section>
 </main>
 
-<footer>PSM Duty Viewer · Roster period: 22 August – 8 September 2026 · Latest amended roster</footer>
+<footer>PSM Duty Viewer · Roster period: 22 August – 8 September 2026 · Hisham removed pending replacement</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const DATA = {"dates":["2026-08-22","2026-08-23","2026-08-24","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-08-29","2026-08-30","2026-08-31","2026-09-01","2026-09-02","2026-09-03","2026-09-04","2026-09-05","2026-09-06","2026-09-07","2026-09-08"],"graphics":{"LAI (1059)":["10:00 - 18:00 HOME","8:00 - 16:00","9:00 - 17:00 HOME","OFF","8:00 - 16:00","9:00 - 17:00 HOME","14:00 -22:00 HOME","12:00 -20:00 HOME","8:00 - 16:00","OFF","8:00 - 16:00","8:00 - 16:00","8:00 - 16:00 HOME","9:00 - 17:00 HOME","14:00 -22:00 HOME","OFF","8:00 - 16:00","8:00 - 16:00"],"AFNAN (1057)":["9:00 - 17:00 HOME","14:00 -22:00 HOME","OFF","8:00 - 16:00","8:00 - 16:00","8:00 - 16:00","10:00 - 18:00 HOME","12:00 -20:00 HOME","OFF","8:00 - 16:00","12:00 -20:00 HOME","14:00 -22:00 HOME","8:00 - 16:00","14:00 -22:00 HOME","OFF","8:00 - 16:00","10:00 - 18:00 HOME","12:00 -20:00 HOME"],"RAAI (1058)":["9:00 - 17:00","16:00-00:00 HOME","OFF","9:00 - 17:00","16:00-00:00 HOME","9:00 - 17:00","16:00-00:00 HOME","9:00 - 17:00","OFF","9:00 - 17:00","16:00-00:00 HOME","9:00 - 17:00","16:00-00:00 HOME","9:00 - 17:00","OFF","9:00 - 17:00","16:00-00:00 HOME","9:00 - 17:00"],"HISHAM (1062)":["14:00 -22:00","14:00 -22:00 HOME","16:00-00:00 HOME","14:00 -22:00 HOME","16:00-00:00 HOME","OFF","14:00 -22:00 HOME","16:00-00:00 HOME","14:00 -22:00 HOME","16:00-00:00 HOME","14:00 -22:00","OFF","16:00-00:00 HOME","14:00 -22:00 HOME","16:00-00:00 HOME","14:00 -22:00 HOME","16:00-00:00 HOME","OFF"],"ISMAIL (501)":["16:00-00:00","OFF","12:00 -20:00","10:00 - 18:00","9:00 - 17:00","16:00-00:00","10:00 - 18:00","OFF","10:00 - 18:00","16:00-00:00","10:00 - 18:00","8:00 - 16:00","8:00 - 16:00","OFF","10:00 - 18:00","14:00 -22:00","8:00 - 16:00","10:00 - 18:00"],"RUWAY (186)":["10:00 - 18:00","10:00 - 18:00","8:00 - 16:00","10:00 - 18:00","OFF","10:00 - 18:00","14:00 -22:00","10:00 - 18:00","10:00 - 18:00","10:00 - 18:00","OFF","10:00 - 18:00","10:00 - 18:00","10:00 - 18:00","10:00 - 18:00","10:00 - 18:00","OFF","10:00 - 18:00"],"HASSAN (392)":["10:00 - 18:00","14:00 -22:00","16:00-00:00","10:00 - 18:00","ANNUAL LEAVE",null,null,null,null,null,null,null,null,null,null,null,null,null],"RAIQ (959)":["10:00 - 18:00","10:00 - 18:00","10:00 - 18:00","OFF","10:00 - 18:00","10:00 - 18:00","16:00-00:00","10:00 - 18:00","10:00 - 18:00","OFF","10:00 - 18:00","10:00 - 18:00","10:00 - 18:00","16:00-00:00","10:00 - 18:00","OFF","10:00 - 18:00","10:00 - 18:00"],"IYAN (955)":["OFF","16:00-00:00","10:00 - 18:00","16:00-00:00","13:00 -21:00","16:00-00:00","OFF","16:00-00:00","16:00-00:00","10:00 - 18:00","16:00-00:00","16:00-00:00","OFF","16:00-00:00","16:00-00:00","10:00 - 18:00","14:00 -22:00","16:00-00:00"],"WYL (346)":["OFF","14:00 -22:00","14:00 -22:00","14:00 -22:00","14:00 -22:00","14:00 -22:00","OFF","14:00 -22:00","14:00 -22:00","14:00 -22:00","14:00 -22:00","14:00 -22:00","OFF","16:00-00:00","14:00 -22:00","14:00 -22:00","14:00 -22:00","14:00 -22:00"],"DISHALA (1054)":["OFF","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","OFF","OFF","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","OFF","OFF","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00"],"ADHDHU (344)":["OFF","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","OFF","OFF","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","OFF","OFF","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00"]},"live":{"HENDHUNU HENDHUNA":{"time":"7:30 - 10:00","assigned":[null,"LAI (1059)","RUWAY (186)","AFNAN (1057)","LAI (1059)","AFNAN (1057)",null,null,"LAI (1059)","AFNAN (1057)","LAI (1059)","LAI (1059)","AFNAN (1057)",null,null,"AFNAN (1057)","ISMAIL (501)","LAI (1059)"],"backup":[null,"AFNAN (1057)","LAI (1059)","ISMAIL (501)","AFNAN (1057)","LAI (1059)",null,null,"ISMAIL (501)","RUWAY (186)","AFNAN (1057)","AFNAN (1057)","LAI (1059)",null,null,"ISMAIL (501)","LAI (1059)","ISMAIL (501)"]},"KUDA MASSAIYKATHEH":{"time":"16:30 - 18:00","assigned":["HISHAM (1062)",null,null,"ISMAIL (501)",null,null,null,"RUWAY (186)",null,null,"HISHAM (1062)",null,null,null,"ISMAIL (501)",null,null,"RUWAY (186)"],"backup":["HASSAN (392)",null,null,"HASSAN (392)",null,null,null,"HISHAM (1062)",null,null,"ISMAIL (501)",null,null,null,"RUWAY (186)",null,null,"ISMAIL (501)"]},"WEEKEND VIBE":{"time":"22:00 - 23:30","assigned":[null,null,null,null,null,"IYAN (955)",null,null,null,null,null,null,"HISHAM (1062)",null,null,null,null,null],"backup":[null,null,null,null,null,"IYAN (955)",null,null,null,null,null,null,"HISHAM (1062)",null,null,null,null,null]}},"daily":{"HENDHUNU HENDHUNA DAILY WORKS":{"time":"14:00 - 16:00","assigned":["RUWAY (186)","RAIQ (959)","IYAN (955)","ISMAIL (501)","RAIQ (959)",null,null,"RAIQ (959)","RUWAY (186)","IYAN (955)","ISMAIL (501)","RUWAY (186)",null,null,"RAIQ (959)","IYAN (955)","RAIQ (959)","ISMAIL (501)"]}},"news":{"09:00 - 12:00":["RUWAY (186)","HASSAN (392)","RUWAY (186)","HASSAN (392)","ISMAIL (501)","RUWAY (186)","ISMAIL (501)","RAIQ (959)","RUWAY (186)","AFNAN (1057)","RAIQ (959)","RUWAY (186)","ISMAIL (501)","RUWAY (186)","RAIQ (959)","RUWAY (186)","RAIQ (959)","RUWAY (186)"],"12:00 - 15:00 (Friday 13:00-15:00)":["AFNAN (1057)","RAIQ (959)","ISMAIL (501)","AFNAN (1057)","RAIQ (959)","AFNAN (1057)","ISMAIL (501)","AFNAN (1057)","ISMAIL (501)","AFNAN (1057)","AFNAN (1057)","ISMAIL (501)","AFNAN (1057)","AFNAN (1057)","ISMAIL (501)","AFNAN (1057)","ISMAIL (501)","ISMAIL (501)"],"15:00 - 18:00":["HASSAN (392)","AFNAN (1057)","IYAN (955)","ISMAIL (501)","RAIQ (959)","RAIQ (959)","AFNAN (1057)","AFNAN (1057)","HISHAM (1062)","IYAN (955)","ISMAIL (501)","AFNAN (1057)","RAIQ (959)","AFNAN (1057)","ISMAIL (501)","HISHAM (1062)","AFNAN (1057)","ISMAIL (501)"],"BACK-UP DUTY 1":["ISMAIL (501)","IYAN (955)","HISHAM (1062)","IYAN (955)","HISHAM (1062)","ISMAIL (501)","HISHAM (1062)","HISHAM (1062)","IYAN (955)","ISMAIL (501)","IYAN (955)","IYAN (955)","HISHAM (1062)","IYAN (955)","HISHAM (1062)","IYAN (955)","HISHAM (1062)","IYAN (955)"],"18:00 - 21:00":["HISHAM (1062)","HISHAM (1062)","HASSAN (392)","HISHAM (1062)","IYAN (955)","ISMAIL (501)","HISHAM (1062)","HISHAM (1062)","HISHAM (1062)","HISHAM (1062)","HISHAM (1062)","HISHAM (1062)","HISHAM (1062)","HISHAM (1062)","IYAN (955)","ISMAIL (501)","IYAN (955)","AFNAN (1057)"],"21:00 - 00:00":["ISMAIL (501)","IYAN (955)","HISHAM (1062)","IYAN (955)","HISHAM (1062)","ISMAIL (501)","HISHAM (1062)","HISHAM (1062)","IYAN (955)","ISMAIL (501)","IYAN (955)","IYAN (955)","HISHAM (1062)","IYAN (955)","HISHAM (1062)","IYAN (955)","HISHAM (1062)","IYAN (955)"],"BACK-UP DUTY 2":["HASSAN (392)","AFNAN (1057)","IYAN (955)","ISMAIL (501)","RAIQ (959)","RAIQ (959)","AFNAN (1057)","AFNAN (1057)","HISHAM (1062)","IYAN (955)","ISMAIL (501)","AFNAN (1057)","RAIQ (959)","AFNAN (1057)","ISMAIL (501)","HISHAM (1062)","AFNAN (1057)","ISMAIL (501)"]},"contacts":[["ISMAIL (501)","753 2887"],["RUWAY (186)","773 4007"],["HASSAN (392)","782 3393"],["RAIQ (959)","731 1686"],["IYAN (955)","723 4951"],["WYL (346)","788 7524"],["AFNAN (1057)","784 2000"],["DISHALA (1054)","748 3457"],["HISHAM (1062)","775 1001"],["LAI (1059)","733 5880"]]};
+const DATA = {"dates":["2026-08-22","2026-08-23","2026-08-24","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-08-29","2026-08-30","2026-08-31","2026-09-01","2026-09-02","2026-09-03","2026-09-04","2026-09-05","2026-09-06","2026-09-07","2026-09-08"],"graphics":{"LAI (1059)":["10:00 - 18:00 HOME","8:00 - 16:00","9:00 - 17:00 HOME","OFF","8:00 - 16:00","9:00 - 17:00 HOME","14:00 -22:00 HOME","12:00 -20:00 HOME","8:00 - 16:00","OFF","8:00 - 16:00","8:00 - 16:00","8:00 - 16:00 HOME","9:00 - 17:00 HOME","14:00 -22:00 HOME","OFF","8:00 - 16:00 HOME","8:00 - 16:00"],"AFNAN (1057)":["9:00 - 17:00 HOME","14:00 -22:00 HOME","OFF","8:00 - 16:00","8:00 - 16:00","8:00 - 16:00","10:00 - 18:00 HOME","12:00 -20:00 HOME","OFF","8:00 - 16:00","12:00 -20:00 HOME","14:00 -22:00 HOME","8:00 - 16:00","14:00 -22:00 HOME","OFF","8:00 - 16:00","14:00 -22:00 HOME","12:00 -20:00 HOME"],"RAAI (1058)":["9:00 - 17:00","16:00-00:00 HOME","OFF","9:00 - 17:00","16:00-00:00 HOME","9:00 - 17:00","16:00-00:00 HOME","9:00 - 17:00","OFF","9:00 - 17:00","16:00-00:00 HOME","9:00 - 17:00","16:00-00:00 HOME","9:00 - 17:00","OFF","9:00 - 17:00","16:00-00:00 HOME","9:00 - 17:00"],"ISMAIL (501)":["16:00-00:00","OFF","12:00 -20:00","10:00 - 18:00","9:00 - 17:00","16:00-00:00","10:00 - 18:00","OFF","10:00 - 18:00","16:00-00:00","10:00 - 18:00","8:00 - 16:00","8:00 - 16:00","OFF","10:00 - 18:00","14:00 -22:00","8:00 - 16:00","10:00 - 18:00"],"RUWAY (186)":["10:00 - 18:00","10:00 - 18:00","8:00 - 16:00","10:00 - 18:00","OFF","10:00 - 18:00","14:00 -22:00","10:00 - 18:00","10:00 - 18:00","10:00 - 18:00","OFF","10:00 - 18:00","16:00-00:00","10:00 - 18:00","10:00 - 18:00","10:00 - 18:00","OFF","10:00 - 18:00"],"HASSAN (392)":["10:00 - 18:00","14:00 -22:00","16:00-00:00","10:00 - 18:00","ANNUAL LEAVE",null,null,null,null,null,null,null,null,null,null,null,null,null],"RAIQ (959)":["10:00 - 18:00","10:00 - 18:00","10:00 - 18:00","OFF","10:00 - 18:00","10:00 - 18:00","16:00-00:00","10:00 - 18:00","10:00 - 18:00","OFF","10:00 - 18:00","10:00 - 18:00","10:00 - 18:00","16:00-00:00","10:00 - 18:00","OFF","10:00 - 18:00","10:00 - 18:00"],"IYAN (955)":["OFF","16:00-00:00","10:00 - 18:00","16:00-00:00","13:00 -21:00","16:00-00:00","OFF","16:00-00:00","16:00-00:00","10:00 - 18:00","16:00-00:00","16:00-00:00","OFF","16:00-00:00","16:00-00:00","10:00 - 18:00","14:00 -22:00","16:00-00:00"],"WYL (346)":["OFF","14:00 -22:00","14:00 -22:00","14:00 -22:00","14:00 -22:00","14:00 -22:00","OFF","14:00 -22:00","14:00 -22:00","14:00 -22:00","14:00 -22:00","14:00 -22:00","OFF","16:00-00:00","14:00 -22:00","14:00 -22:00","14:00 -22:00","14:00 -22:00"],"DISHALA (1054)":["OFF","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","OFF","OFF","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","OFF","OFF","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00"],"ADHDHU (344)":["OFF","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","OFF","OFF","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00","OFF","OFF","9:00 - 17:00","9:00 - 17:00","9:00 - 17:00"]},"live":{"HENDHUNU HENDHUNA":{"time":"07:30 - 10:00","assigned":[null,"LAI (1059)","RUWAY (186)","AFNAN (1057)","LAI (1059)","AFNAN (1057)",null,null,"LAI (1059)","AFNAN (1057)","LAI (1059)","LAI (1059)","AFNAN (1057)",null,null,"AFNAN (1057)","ISMAIL (501)","LAI (1059)"],"backup":[null,"AFNAN (1057)","LAI (1059)","ISMAIL (501)","AFNAN (1057)","LAI (1059)",null,null,"ISMAIL (501)","RUWAY (186)","AFNAN (1057)","AFNAN (1057)","LAI (1059)",null,null,"ISMAIL (501)","LAI (1059)","ISMAIL (501)"]},"KUDA MASSAIYKATHEH":{"time":"16:30 - 18:00","assigned":[null,null,null,"ISMAIL (501)",null,null,null,"RUWAY (186)",null,null,null,null,null,null,"ISMAIL (501)",null,null,"RUWAY (186)"],"backup":["HASSAN (392)",null,null,"HASSAN (392)",null,null,null,null,null,null,"ISMAIL (501)",null,null,null,"RUWAY (186)",null,null,"ISMAIL (501)"]},"WEEKEND VIBE":{"time":"22:00 - 23:30","assigned":[null,null,null,null,null,"IYAN (955)",null,null,null,null,null,null,"AFNAN (1057)",null,null,null,null,null],"backup":[null,null,null,null,null,"IYAN (955)",null,null,null,null,null,null,null,null,null,null,null,null]}},"daily":{"HENDHUNU HENDHUNA DAILY WORKS":{"time":"14:00 - 16:00","assigned":["RUWAY (186)","RAIQ (959)","IYAN (955)","ISMAIL (501)","RAIQ (959)",null,null,"RAIQ (959)","RUWAY (186)","IYAN (955)","ISMAIL (501)","RUWAY (186)",null,null,"RAIQ (959)","IYAN (955)","RAIQ (959)","ISMAIL (501)"]}},"news":{"09:00 - 12:00":["RUWAY (186)","HASSAN (392)","RUWAY (186)","HASSAN (392)","ISMAIL (501)","RUWAY (186)","ISMAIL (501)","RAIQ (959)","RUWAY (186)","AFNAN (1057)","RAIQ (959)","RUWAY (186)","ISMAIL (501)","RUWAY (186)","RAIQ (959)","RUWAY (186)","RAIQ (959)","RUWAY (186)"],"12:00 - 15:00 (Friday 13:00-15:00)":["AFNAN (1057)","RAIQ (959)","ISMAIL (501)","AFNAN (1057)","RAIQ (959)","AFNAN (1057)","ISMAIL (501)","AFNAN (1057)","ISMAIL (501)","AFNAN (1057)","AFNAN (1057)","ISMAIL (501)","AFNAN (1057)","AFNAN (1057)","ISMAIL (501)","AFNAN (1057)","ISMAIL (501)","ISMAIL (501)"],"15:00 - 18:00":["HASSAN (392)","AFNAN (1057)","IYAN (955)","ISMAIL (501)","RAIQ (959)","RAIQ (959)","AFNAN (1057)","AFNAN (1057)",null,"IYAN (955)","ISMAIL (501)","AFNAN (1057)","RAIQ (959)","AFNAN (1057)","ISMAIL (501)","WYL (346)","AFNAN (1057)","ISMAIL (501)"],"BACK-UP DUTY 1":["ISMAIL (501)","IYAN (955)",null,"IYAN (955)",null,"ISMAIL (501)",null,null,"IYAN (955)","ISMAIL (501)","IYAN (955)","IYAN (955)",null,"IYAN (955)",null,"IYAN (955)",null,"IYAN (955)"],"18:00 - 21:00":[null,null,"HASSAN (392)",null,"IYAN (955)","ISMAIL (501)",null,null,null,null,null,"AFNAN (1057)","ISMAIL (501)","RAIQ (959)","IYAN (955)","ISMAIL (501)","IYAN (955)","AFNAN (1057)"],"21:00 - 00:00":["ISMAIL (501)","IYAN (955)",null,"IYAN (955)",null,"ISMAIL (501)",null,null,"IYAN (955)","ISMAIL (501)","IYAN (955)","IYAN (955)","ISMAIL (501)","IYAN (955)","IYAN (955)","IYAN (955)","AFNAN (1057)","IYAN (955)"],"BACK-UP DUTY 2":["HASSAN (392)","AFNAN (1057)","IYAN (955)","ISMAIL (501)","RAIQ (959)","RAIQ (959)","AFNAN (1057)","AFNAN (1057)",null,"IYAN (955)","ISMAIL (501)","AFNAN (1057)","RAIQ (959)","AFNAN (1057)","ISMAIL (501)",null,"AFNAN (1057)","ISMAIL (501)"]},"contacts":[["ISMAIL (501)","753 2887"],["RUWAY (186)","773 4007"],["HASSAN (392)","782 3393"],["RAIQ (959)","731 1686"],["IYAN (955)","723 4951"],["WYL (346)","788 7524"],["AFNAN (1057)","784 2000"],["DISHALA (1054)","748 3457"],["LAI (1059)","733 5880"]]};
 const SUPABASE_URL = "https://eqlmwfaovypbhvcgrjyu.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_rAVR70jh3phAYEeTM2YJRg_NQO3aQIb";
 const ADMIN_USER_ID = "b13a6e26-3733-473f-9e66-d1f0f36dbeb1";
@@ -642,8 +667,8 @@ async function loadSpecials(){
       time: `${String(r.start_time || "").slice(0,5)} - ${String(r.end_time || "").slice(0,5)}`,
       start: String(r.start_time || "").slice(0,5),
       end: String(r.end_time || "").slice(0,5),
-      staff: r.assigned_staff || "",
-      backup: r.backup_staff || "",
+      staff: cleanName(r.assigned_staff)==="HISHAM (1062)" ? "" : (r.assigned_staff || ""),
+      backup: cleanName(r.backup_staff)==="HISHAM (1062)" ? "" : (r.backup_staff || ""),
       notes: r.notes || "",
       status: r.status || "ACTIVE"
     }));
@@ -666,7 +691,7 @@ async function loadLeaves(){
       .order("start_date",{ascending:true});
     if(error) throw error;
     onlineLeaves=(rows||[]).map(r=>({
-      id:String(r.id),staff:r.staff_name||"",type:r.leave_type||"",
+      id:String(r.id),staff:cleanName(r.staff_name)==="HISHAM (1062)" ? "" : (r.staff_name||""),type:r.leave_type||"",
       start:r.start_date||"",end:r.end_date||r.start_date||"",
       notes:r.notes||"",status:r.status||"ACTIVE",created_at:r.created_at||""
     }));
@@ -886,7 +911,7 @@ function renderCurrentNews(i){
       : "";
 
     parts.push(`<div class="card news-card current-duty-card ${activeLeaveFor(a.person)?`leave-card ${leaveTypeInfo(activeLeaveFor(a.person).type).card}`:''}">
-      <div class="duty-kicker current">● Active now</div>
+      <div class="duty-kicker current"><span class="blink-dot"></span>Active now</div>
       <div class="person">${esc(cleanName(a.person||"Unassigned"))}</div>
       <div class="time">${esc(current.range)} · News & Social Media</div>
       ${originalNote}
@@ -931,6 +956,7 @@ function renderLeaveToday(){
 
   const day=ymd(selected);
   const rows=leaves()
+    .filter(x=>x.staff)
     .filter(x=>String(x.status||"ACTIVE").toUpperCase()!=="CANCELLED")
     .filter(x=>x.start && x.end && day>=x.start && day<=x.end)
     .sort((a,b)=>a.staff.localeCompare(b.staff));
@@ -1001,7 +1027,7 @@ function render(){
   if(i>=0){
     Object.entries(DATA.live).forEach(([program,o])=>{
       if(o.assigned[i]){
-        liveHtml+=dutyCard(program,o.assigned[i],o.time,'live-card',`<span class="badge live">LIVE</span>${isNow(o.time,selected)?'<span class="badge on">LIVE NOW</span>':''}${o.backup[i]?`<span class="badge backup">Backup: ${esc(cleanName(o.backup[i]))}</span>${activeLeaveFor(o.backup[i])?'<span class="badge cover">BACKUP ON LEAVE</span>':''}`:''}`);
+        liveHtml+=dutyCard(program,o.assigned[i],o.time,'live-card',`<span class="badge live">LIVE</span>${isNow(o.time,selected)?'<span class="badge live-now">LIVE NOW</span>':''}${o.backup[i]?`<span class="badge backup">Backup: ${esc(cleanName(o.backup[i]))}</span>${activeLeaveFor(o.backup[i])?'<span class="badge cover">BACKUP ON LEAVE</span>':''}`:''}`);
       }
     });
   }
@@ -1073,13 +1099,13 @@ function renderOnNow(i){
     Object.entries(DATA.live).forEach(([program,o])=>{
       const person=o.assigned[i];
       if(person&&!activeLeaveFor(person)&&isNow(o.time,selected))
-        out.push(dutyCard(program,person,o.time,'live-card','<span class="badge live">LIVE NOW</span>',{cover:false}));
+        out.push(dutyCard(program,person,o.time,'live-card','<span class="badge live-now">LIVE NOW</span>',{cover:false}));
     });
   }
   specials()
     .filter(x=>x.date===ymd(selected)&&String(x.status||'ACTIVE').toUpperCase()!=='CANCELLED')
     .filter(x=>!activeLeaveFor(x.staff)&&isNow(x.time,selected))
-    .forEach(x=>out.push(dutyCard(x.name,x.staff,x.time,'live-card','<span class="badge live">SPECIAL LIVE NOW</span>',{cover:false})));
+    .forEach(x=>out.push(dutyCard(x.name,x.staff,x.time,'live-card','<span class="badge live-now">SPECIAL LIVE NOW</span>',{cover:false})));
   document.getElementById('onNow').innerHTML=out.join('')||empty(
     ymd(selected)===ymd(new Date())?'No active duty found at this time.':'Select Today to see current active duty.'
   );
@@ -1145,7 +1171,7 @@ function renderLeaveAdmin(){
   const box=document.getElementById("leaveAdminList");
   if(!box)return;
   if(leaveLoadError){box.innerHTML=empty(leaveLoadError);return}
-  const rows=leaves().slice().sort((a,b)=>(a.start+a.staff).localeCompare(b.start+b.staff));
+  const rows=leaves().filter(x=>x.staff).slice().sort((a,b)=>(a.start+a.staff).localeCompare(b.start+b.staff));
   if(!rows.length){box.innerHTML=empty("No staff leave has been added yet.");return}
   const canEdit=isAdminSession();
   box.innerHTML=rows.map(x=>{
